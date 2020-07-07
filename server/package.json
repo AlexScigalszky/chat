@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "serve": "node index.js",
+    "ngbrok": "node index.js && ngrok http -host-header=rewrite site.dev:3000",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

@@ -47,7 +47,7 @@ const save = function (message) {
 
 const getAll = async () => {
     const db = connect();
-    const result = await utils.selectList(db, "SELECT * FROM chats ORDER BY timestamp DESC LIMIT 20");
+    const result = await utils.selectList(db, "SELECT * FROM chats ORDER BY timestamp ASC LIMIT 20");
     console.debug('result', result);
     disconnect(db);
     return result;
