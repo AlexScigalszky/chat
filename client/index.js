@@ -1,7 +1,14 @@
+const API_URL = 'http://localhost:3000';
+
+const models = require('./models/message');
+const io = require("socket.io-client");
+const ioClient = io.connect(API_URL);
 const readln = require('readline');
 const httpHelper = require('./http-helper');
 
-const API_URL = 'http://localhost:3000/';
+ioClient.on("message", (msg) => {
+    console.info(msg.userId + ': ' + msg.message);
+});
 
 const cl = readln.createInterface({
     input: process.stdin,
@@ -11,9 +18,7 @@ const cl = readln.createInterface({
 });
 cl.prompt(true);
 
-const userId = "José";
-
-
+let userId = "Alguien";
 
 var waitForMessage = function () {
     return new Promise((res, rej) => {
@@ -21,41 +26,40 @@ var waitForMessage = function () {
     });
 };
 
-
-
 const fetchNewMessage = () => {
-    httpHelper.get(API_URL + 'read')
+    httpHelper.get(API_URL + '/read')
         .then((data) => {
             const json = JSON.parse(data);
             console.clear();
             json.forEach(el => {
-                
+
                 process.stdout.clearLine();
                 process.stdout.cursorTo(0);
                 console.log(`${el.userId} : ${el.message}`);
-                cl.prompt(true);
-                
-                // cl.pause();
-                // cl.resume();
+
             });
+            cl.prompt(true);
+
+
         });
 }
 
-fetchNewMessage();
-const interval = setInterval(fetchNewMessage, 3000);
-
-
 (async function main() {
-    var answer;
+    var answer = null;
+
+    console.log('Escribe tu alias:');
+    userId = await waitForMessage();
+
+    fetchNewMessage();
 
     while (answer != 'exit') {
-
-        httpHelper.post(API_URL + 'write', { userId: userId, message: answer});
-        console.info('este mensaje se está enviando a todas las personas que hay en este chat: ', answer);
+        if (answer != null) {
+            ioClient.emit('message', models.createMessage(userId, answer));
+        }
+        // httpHelper.post(API_URL + '/write', { userId: userId, message: answer});
         answer = await waitForMessage();
-    }
 
-    clearInterval(interval);
+    }
 
     console.log('');
     console.log('Apu dice: ¡gracias vuelva prontos!');

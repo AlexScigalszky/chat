@@ -17,6 +17,10 @@ const write = function (req, res) {
     }
 };
 
+const writeMessage = function (msg) {
+    database.save(msg);
+};
+
 const read = async (req, res) => {
     const result = await database.getAll();
 
@@ -24,5 +28,6 @@ const read = async (req, res) => {
     res.send(result);
 };
 
+exports.writeMessage = writeMessage;
 exports.write = write;
 exports.read = read;

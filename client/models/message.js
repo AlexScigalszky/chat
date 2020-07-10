@@ -8,7 +8,8 @@ const createMessage = (userId, message) => {
 
     return {
         userId,
-        message: message
+        message: message,
+        timestamp: new Date().getTime()
     };
 };
 
