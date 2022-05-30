@@ -1,5 +1,5 @@
 var model = require('./models/message');
-var database = require('./database/sqlite/sqlite.database');
+var database = require('./database/memory/memory.database');
 
 const write = function (req, res) {
     console.debug('new message: ', req.body);
